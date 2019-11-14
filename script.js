@@ -1,6 +1,7 @@
 'use strict';
 let noteIdCounter = 8,
-	columnIdCounter = 4;
+	columnIdCounter = 4,
+	draggedNote = null;
 document
 	.querySelectorAll('.column')
 	.forEach(columnProcess);
@@ -59,5 +60,49 @@ function noteProcess(noteElement) {
 	});
 	noteElement.addEventListener('blur', function (event) {
 		noteElement.removeAttribute('contenteditTable');
-	})
+	});
+
+	noteElement.addEventListener('dragstart', dragstart_noteHandler);
+	noteElement.addEventListener('dragend', dragend_noteHandler);
+	noteElement.addEventListener('dragenter', dragenter_noteHandler);
+	noteElement.addEventListener('dragover', dragover_noteHandler);
+	noteElement.addEventListener('dragleave', dragleave_noteHandler);
+	noteElement.addEventListener('drop', drop_noteHandler);
+}
+
+function dragstart_noteHandler(event) {
+	draggedNote = this;
+	this.classList.add('dragged');
+}
+
+function dragend_noteHandler(event) {
+	draggedNote = null;
+	this.classList.remove('dragged');
+}
+
+function dragenter_noteHandler(event) {
+	if (this === draggedNote) {
+		return;
+	}
+	this.classList.add('under');
+}
+
+function dragover_noteHandler(event) {
+	if (this === draggedNote) {
+		return;
+	}
+	event.stopPropagation();
+}
+
+function dragleave_noteHandler(event) {
+	if (this === draggedNote) {
+		return;
+	}
+	this.classList.remove('under');
+}
+
+function drop_noteHandler(event) {
+	if (this === draggedNote) {
+		return;
+	}
 }
